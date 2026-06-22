@@ -1,0 +1,3 @@
+SELECT *
+FROM documents
+WHERE folder_id = $1;

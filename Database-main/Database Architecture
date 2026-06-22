@@ -1,0 +1,20 @@
+database/
+│
+├── schema.sql
+│
+├── schema/
+│ ├── users.sql
+│ ├── folders.sql
+│ ├── categories.sql
+│ ├── documents.sql
+│ ├── tags.sql
+│ ├── document_tags.sql
+│ ├── search_history.sql
+│ └── document_embeddings.sql
+│
+├── views/
+│ └── searchable_documents.sql
+│
+└── seeds/
+├── categories_seed.sql
+└── tags_seed.sql

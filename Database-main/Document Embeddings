@@ -1,0 +1,14 @@
+CREATE TABLE document_embeddings (
+
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+    document_id UUID UNIQUE
+    REFERENCES documents(id)
+    ON DELETE CASCADE,
+
+    embedding_model VARCHAR(100),
+
+    embedding_vector JSONB,
+
+    created_at TIMESTAMP DEFAULT NOW()
+);

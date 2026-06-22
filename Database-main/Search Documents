@@ -1,0 +1,6 @@
+SELECT *
+FROM documents
+WHERE
+title ILIKE '%' || $1 || '%'
+OR
+description ILIKE '%' || $1 || '%';

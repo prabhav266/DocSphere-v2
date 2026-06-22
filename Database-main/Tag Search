@@ -1,0 +1,11 @@
+SELECT d.*
+
+FROM documents d
+
+JOIN document_tags dt
+ON d.id = dt.document_id
+
+JOIN tags t
+ON dt.tag_id = t.id
+
+WHERE t.tag_name = $1;

@@ -1,0 +1,28 @@
+SELECT DISTINCT d.*
+
+FROM documents d
+
+LEFT JOIN categories c
+ON d.category_id = c.id
+
+LEFT JOIN document_tags dt
+ON d.id = dt.document_id
+
+LEFT JOIN tags t
+ON dt.tag_id = t.id
+
+WHERE
+
+d.title ILIKE '%' || $1 || '%'
+
+OR
+
+d.description ILIKE '%' || $1 || '%'
+
+OR
+
+c.category_name ILIKE '%' || $1 || '%'
+
+OR
+
+t.tag_name ILIKE '%' || $1 || '%';

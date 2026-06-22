@@ -1,0 +1,11 @@
+SELECT
+    d.id,
+    d.title,
+    d.file_name,
+    d.file_url,
+    d.total_downloads,
+    c.category_name
+FROM documents d
+LEFT JOIN categories c
+ON d.category_id = c.id
+ORDER BY d.created_at DESC;
