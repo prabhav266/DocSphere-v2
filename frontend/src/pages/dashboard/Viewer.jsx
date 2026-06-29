@@ -68,7 +68,7 @@ const Viewer = () => {
             <ArrowLeft className="h-4 w-4 mr-2" /> Back
           </Button>
           <div className="min-w-0">
-            <h1 className="text-xl font-bold truncate max-w-[200px] md:max-w-md">{doc.title}</h1>
+            <h1 className="text-xl font-bold truncate max-w-50 md:max-w-md">{doc.title}</h1>
             <p className="text-xs text-slate-500">{type} • {getDocSize(doc)} • Uploaded on {getDocDate(doc)}</p>
           </div>
         </div>
@@ -87,6 +87,15 @@ const Viewer = () => {
           </Button>
         </div>
       </div>
+
+      {doc.ai_summary ? (
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-2">AI Summary</h2>
+          <p className="text-sm leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line">
+            {doc.ai_summary}
+          </p>
+        </div>
+      ) : null}
 
       <div className="flex-1 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex flex-col relative border border-slate-300 dark:border-slate-700 shadow-sm">
         {type === 'PDF' && fileUrl ? (

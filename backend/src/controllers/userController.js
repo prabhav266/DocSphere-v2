@@ -18,6 +18,10 @@ const uploadProfileImage = async (req, res) => {
       });
     }
 
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
     const imagePath = `/uploads/${req.file.filename}`;
 
     await pool.query(
@@ -33,12 +37,11 @@ const uploadProfileImage = async (req, res) => {
       message: "Profile image updated",
       profile_image: imagePath,
     });
-
   } catch (error) {
-    console.error(error);
+    console.error("UPLOAD PROFILE IMAGE ERROR:", error);
 
     res.status(500).json({
-      message: "Server Error",
+      message: error.message || "Server Error",
     });
   }
 };
@@ -47,15 +50,17 @@ const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Users may only update their own profile
-    if (id !== req.user.id) {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    if (id !== req.user.id.toString()) {
       return res.status(403).json({
         message: "Not authorized to update this profile",
       });
     }
 
     const { username, bio } = req.body;
-
     const updatedUser = await updateUserProfile(id, { username, bio });
 
     if (!updatedUser) {
@@ -66,16 +71,20 @@ const updateUser = async (req, res) => {
 
     res.status(200).json(sanitizeUser(updatedUser));
   } catch (error) {
-    console.error(error);
+    console.error("UPDATE USER ERROR:", error);
 
     res.status(500).json({
-      message: "Server Error",
+      message: error.message || "Server Error",
     });
   }
 };
 
 const getCurrentUser = async (req, res) => {
   try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
     const user = await findUserById(req.user.id);
 
     if (!user) {
@@ -84,8 +93,8 @@ const getCurrentUser = async (req, res) => {
 
     res.status(200).json(sanitizeUser(user));
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    console.error("GET CURRENT USER ERROR:", error);
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 

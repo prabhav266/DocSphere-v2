@@ -10,6 +10,7 @@ const DocumentCard = ({ doc, view = 'grid' }) => {
   const type = getDocExt(doc);
   const date = getDocDate(doc);
   const size = getDocSize(doc);
+  const summary = doc.ai_summary || doc.description || "";
 
   const getTypeColor = (type) => {
     switch (type) {
@@ -46,7 +47,7 @@ const DocumentCard = ({ doc, view = 'grid' }) => {
   return (
     <Link to={`/dashboard/viewer/${doc.id}`}>
       <Card className="group hover:shadow-lg transition-all overflow-hidden border-slate-200 dark:border-slate-800">
-        <div className="aspect-[4/3] bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center relative border-b border-slate-100 dark:border-slate-800">
+        <div className="aspect-4/3 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center relative border-b border-slate-100 dark:border-slate-800">
           <div className={cn("p-4 rounded-xl", getTypeColor(type))}>
             <FileText className="h-12 w-12" />
           </div>
@@ -58,6 +59,9 @@ const DocumentCard = ({ doc, view = 'grid' }) => {
         </div>
         <div className="p-4">
           <h4 className="font-semibold text-slate-900 dark:text-white truncate mb-1">{doc.title}</h4>
+          {summary ? (
+            <p className="text-sm text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap mb-2">{summary}</p>
+          ) : null}
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500">{date}</span>
             <span className="text-xs font-medium text-slate-400 uppercase">{type}</span>

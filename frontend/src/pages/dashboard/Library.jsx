@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import DocumentCard from '../../components/DocumentCard';
 import { LayoutGrid, List, Filter, Plus, Search } from 'lucide-react';
 import Button from '../../components/Button';
@@ -6,34 +7,49 @@ import { useDocuments } from '../../context/DocumentContext';
 import { getDocExt } from '../../utils/format';
 
 const Library = () => {
-  const { documents } = useDocuments();
+  const { documents = [], loading } = useDocuments();
   const [view, setView] = useState('grid');
   const [sortBy, setSortBy] = useState('date');
   const [filterType, setFilterType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
 
   const filteredDocuments = useMemo(() => {
     let result = [...documents];
 
+    if (activeTab === 'recent') {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      result = result.filter((doc) => new Date(doc.created_at) >= thirtyDaysAgo);
+    }
+
     if (filterType !== 'All') {
-      result = result.filter(doc => getDocExt(doc) === filterType);
+      result = result.filter((doc) => getDocExt(doc) === filterType);
     }
 
     if (searchQuery) {
-      result = result.filter(doc =>
-        doc.title.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const query = searchQuery.toLowerCase();
+      result = result.filter((doc) => {
+        const title = (doc.title || '').toLowerCase();
+        const description = (doc.description || '').toLowerCase();
+        return title.includes(query) || description.includes(query);
+      });
     }
 
     result.sort((a, b) => {
       if (sortBy === 'date') return new Date(b.created_at) - new Date(a.created_at);
-      if (sortBy === 'name') return a.title.localeCompare(b.title);
+      if (sortBy === 'name') return (a.title || '').localeCompare(b.title || '');
       if (sortBy === 'size') return (b.file_size || 0) - (a.file_size || 0);
       return 0;
     });
 
     return result;
-  }, [documents, filterType, sortBy, searchQuery]);
+  }, [activeTab, documents, filterType, searchQuery, sortBy]);
+
+  const tabs = [
+    { id: 'all', label: 'All Files' },
+    { id: 'recent', label: 'Recent' },
+  ];
 
   return (
     <div className="space-y-6">
@@ -43,6 +59,12 @@ const Library = () => {
           <p className="text-slate-500 dark:text-slate-400">Manage and organize all your uploaded documents.</p>
         </div>
         <div className="flex items-center gap-2">
+          <Link to="/dashboard/upload">
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Upload
+            </Button>
+          </Link>
           <div className="flex border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-900 p-1">
             <button
               onClick={() => setView('grid')}
@@ -62,9 +84,13 @@ const Library = () => {
 
       <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center py-2 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-4 overflow-x-auto w-full md:w-auto">
-          {['All Files'].map(tab => (
-            <button key={tab} className={`text-sm font-medium pb-2 px-1 whitespace-nowrap transition-colors text-primary-600 border-b-2 border-primary-600`}>
-              {tab}
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`text-sm font-medium pb-2 px-1 whitespace-nowrap transition-colors ${activeTab === tab.id ? 'text-primary-600 border-b-2 border-primary-600' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            >
+              {tab.label}
             </button>
           ))}
         </div>
@@ -110,11 +136,10 @@ const Library = () => {
         </div>
       </div>
 
-      {filteredDocuments.length > 0 ? (
-        <div className={view === 'grid'
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          : "flex flex-col gap-3"
-        }>
+      {loading ? (
+        <div className="py-20 text-center text-slate-500">Loading your documents...</div>
+      ) : filteredDocuments.length > 0 ? (
+        <div className={view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'flex flex-col gap-3'}>
           {filteredDocuments.map((doc) => (
             <DocumentCard key={doc.id} doc={doc} view={view} />
           ))}

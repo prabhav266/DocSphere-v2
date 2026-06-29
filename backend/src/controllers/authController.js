@@ -7,13 +7,29 @@ const {
 
 const generateToken = require("../utils/generateToken");
 
+const buildUserResponse = (user) => ({
+  id: user.id,
+  username: user.username,
+  full_name: user.username,
+  email: user.email,
+  role: user.role || "user",
+  token: generateToken(user.id),
+});
+
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password } =
-      req.body;
+    const { username, email, password } = req.body;
 
-    const existingUser =
-      await findUserByEmail(email);
+    const trimmedUsername = username?.trim();
+    const trimmedEmail = email?.trim().toLowerCase();
+
+    if (!trimmedUsername || !trimmedEmail || !password) {
+      return res.status(400).json({
+        message: "Username, email, and password are required",
+      });
+    }
+
+    const existingUser = await findUserByEmail(trimmedEmail);
 
     if (existingUser) {
       return res.status(400).json({
@@ -21,36 +37,31 @@ const registerUser = async (req, res) => {
       });
     }
 
-    const passwordHash =
-      await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await createUser(trimmedUsername, trimmedEmail, passwordHash);
 
-    const user = await createUser(
-      username,
-      email,
-      passwordHash
-    );
-
-    res.status(201).json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user.id),
-    });
+    res.status(201).json(buildUserResponse(user));
   } catch (error) {
-  console.error("REGISTER ERROR:", error);
+    console.error("REGISTER ERROR:", error);
 
-  res.status(500).json({
-    message: error.message,
-  });
-}
+    res.status(500).json({
+      message: error.message || "Registration failed",
+    });
+  }
 };
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const trimmedEmail = email?.trim().toLowerCase();
 
-    const user =
-      await findUserByEmail(email);
+    if (!trimmedEmail || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+      });
+    }
+
+    const user = await findUserByEmail(trimmedEmail);
 
     if (!user) {
       return res.status(401).json({
@@ -58,11 +69,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    const isMatch =
-      await bcrypt.compare(
-        password,
-        user.password_hash
-      );
+    const isMatch = await bcrypt.compare(password, user.password_hash || "");
 
     if (!isMatch) {
       return res.status(401).json({
@@ -70,14 +77,9 @@ const loginUser = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      token: generateToken(user.id),
-    });
+    res.status(200).json(buildUserResponse(user));
   } catch (error) {
-    console.error(error);
+    console.error("LOGIN ERROR:", error);
 
     res.status(500).json({
       message: "Server Error",
