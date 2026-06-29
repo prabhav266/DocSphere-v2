@@ -16,6 +16,7 @@ import Upload from './pages/dashboard/Upload';
 import Search from './pages/dashboard/Search';
 import Settings from './pages/dashboard/Settings';
 import Viewer from './pages/dashboard/Viewer';
+import Admin from './pages/dashboard/Admin';
 
 // Layout & Context
 import DashboardLayout from './components/DashboardLayout';
@@ -52,6 +53,12 @@ function App() {
                 }
               >
                 <Route index element={<DashboardHome />} />
+                <Route path="library" element={<Library />} />
+                <Route path="pdf-library" element={<PdfLibrary />} />
+                <Route path="upload" element={<Upload />} />
+                <Route path="search" element={<Search />} />
+                <Route index element={<Admin />} />
+                <Route path="home" element={<DashboardHome />} />
                 <Route path="library" element={<Library />} />
                 <Route path="pdf-library" element={<PdfLibrary />} />
                 <Route path="upload" element={<Upload />} />

@@ -6,6 +6,7 @@ const upload = require(
 
 const {
   fetchDocuments,
+  fetchMyDocuments,
   getDocument,
   uploadDocument,
   downloadDocument,
@@ -23,6 +24,7 @@ const router = express.Router();
 
 router.get("/", fetchDocuments);
 
+router.get("/my", protect, fetchMyDocuments);
 
 router.get("/search", searchDocument);
 

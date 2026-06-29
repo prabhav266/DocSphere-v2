@@ -29,6 +29,11 @@ const DocumentCard = ({ doc, view = 'grid' }) => {
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-slate-900 dark:text-white truncate">{doc.title}</h4>
+          {summary ? (
+            <p className="text-sm text-slate-500 mb-2 overflow-hidden text-ellipsis" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+              {summary}
+            </p>
+          ) : null}
           <div className="flex items-center gap-4 mt-1">
             <span className="text-xs text-slate-500 flex items-center gap-1"><Calendar className="h-3 w-3" /> {date}</span>
             <span className="text-xs text-slate-500 flex items-center gap-1"><HardDrive className="h-3 w-3" /> {size}</span>
@@ -60,7 +65,9 @@ const DocumentCard = ({ doc, view = 'grid' }) => {
         <div className="p-4">
           <h4 className="font-semibold text-slate-900 dark:text-white truncate mb-1">{doc.title}</h4>
           {summary ? (
-            <p className="text-sm text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap mb-2">{summary}</p>
+            <p className="text-sm text-slate-500 overflow-hidden text-ellipsis mb-2" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', whiteSpace: 'normal' }}>
+              {summary}
+            </p>
           ) : null}
           <div className="flex items-center justify-between">
             <span className="text-xs text-slate-500">{date}</span>

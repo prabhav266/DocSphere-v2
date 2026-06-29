@@ -11,6 +11,10 @@ export const documentService = {
     return await apiClient.get(`/documents/${id}`);
   },
 
+  getMine: async () => {
+    return await apiClient.get('/documents/my');
+  },
+
   // Upload a real file with title, description, visibility
   upload: async (file, title, description, visibility = 'public') => {
     const formData = new FormData();

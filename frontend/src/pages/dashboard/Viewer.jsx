@@ -90,12 +90,20 @@ const Viewer = () => {
 
       {doc.ai_summary ? (
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <h2 className="text-lg font-semibold mb-2">AI Summary</h2>
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <h2 className="text-lg font-semibold">AI Summary</h2>
+            <span className="text-xs uppercase tracking-[0.18em] text-slate-400">Auto-generated</span>
+          </div>
           <p className="text-sm leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line">
             {doc.ai_summary}
           </p>
         </div>
-      ) : null}
+      ) : (
+        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-2">AI Summary</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">No summary available yet. Upload the document to generate a summary automatically.</p>
+        </div>
+      )}
 
       <div className="flex-1 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex flex-col relative border border-slate-300 dark:border-slate-700 shadow-sm">
         {type === 'PDF' && fileUrl ? (

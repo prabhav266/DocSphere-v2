@@ -16,7 +16,8 @@ import { cn } from '../utils/cn';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { name: 'Home', path: '/dashboard', icon: Home },
+  { name: 'Admin', path: '/dashboard', icon: Shield },
+  { name: 'Home', path: '/dashboard/home', icon: Home },
   { name: 'Library', path: '/dashboard/library', icon: Files },
   { name: 'My Uploads', path: '/dashboard/pdf-library', icon: FileText },
   { name: 'Upload', path: '/dashboard/upload', icon: UploadIcon },

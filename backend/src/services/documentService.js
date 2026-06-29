@@ -17,6 +17,15 @@ const getDocumentById = async (id) => {
   return result.rows[0];
 };
 
+const getDocumentsByUserId = async (userId) => {
+  const result = await pool.query(
+    "SELECT * FROM documents WHERE uploaded_by = $1 ORDER BY created_at DESC",
+    [userId]
+  );
+
+  return result.rows;
+};
+
 const createDocument = async (
   uploaded_by,
   title,
@@ -146,6 +155,7 @@ const deleteDocumentById = async (id) => {
 module.exports = {
   getAllDocuments,
   getDocumentById,
+  getDocumentsByUserId,
   createDocument,
   incrementViews,
   incrementDownloads,

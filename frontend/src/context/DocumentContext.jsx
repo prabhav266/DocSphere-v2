@@ -1,22 +1,24 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { documentService } from '../api/documentService';
+import { useAuth } from './AuthContext';
 
 const DocumentContext = createContext();
 
 export const DocumentProvider = ({ children }) => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
 
   const fetchDocuments = useCallback(async () => {
     try {
-      const data = await documentService.getAll();
+      const data = isAuthenticated ? await documentService.getMine() : await documentService.getAll();
       setDocuments(data);
     } catch (error) {
       console.error('Error fetching documents:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     fetchDocuments();

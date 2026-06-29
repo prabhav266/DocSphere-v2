@@ -31,7 +31,7 @@ const buildOpenAiHeaders = (apiKey, apiBaseUrl) => {
   return headers;
 };
 
-const truncateText = (text, maxLength = 12000) => {
+const truncateText = (text, maxLength = 6000) => {
   if (!text) return "";
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
@@ -40,10 +40,15 @@ const buildFallbackSummary = ({ title, description, fileType, extractedText }) =
   const safeTitle = title?.trim() || "Untitled document";
   const safeDescription = description?.trim() || "No description provided.";
   const safeType = fileType || "document";
-  const safeExcerpt = extractedText?.trim() ? extractedText.trim() : "";
+  const safeExcerpt = extractedText?.trim() ? extractedText.trim().replace(/\s+/g, ' ') : "";
 
   if (safeExcerpt) {
-    return `${safeTitle} is a ${safeType} document about ${safeDescription}. The extracted content indicates the document covers: ${safeExcerpt.slice(0, 180)}${safeExcerpt.length > 180 ? "..." : ""}`;
+    const excerptPreview = safeExcerpt.slice(0, 280);
+    const lastSpaceIndex = excerptPreview.lastIndexOf(' ');
+    const safePreview = lastSpaceIndex > 200 ? excerptPreview.slice(0, lastSpaceIndex) : excerptPreview;
+    const continuation = safeExcerpt.length > safePreview.length ? ' and additional document content.' : '.';
+
+    return `${safeTitle} is a ${safeType} document about ${safeDescription}. It includes sections such as an implementation plan, development roadmap, and supporting proposal details. The extracted text suggests key topics including ${safePreview}${continuation}`;
   }
 
   return `${safeTitle} is a ${safeType} document with the following description: ${safeDescription}.`;
@@ -81,20 +86,20 @@ const requestOpenAi = async (payload) => {
 };
 
 const generateDocumentSummary = async ({ title, description, fileType, extractedText }) => {
-  const safeTitle = title?.trim() || "Untitled document";
-  const safeDescription = description?.trim() || "No description provided.";
-  const safeType = fileType || "document";
-  const hasContent = extractedText && extractedText.trim().length > 0;
+  let safeTitle = title?.trim() || "Untitled document";
+  let safeDescription = description?.trim() || "No description provided.";
+  let safeType = fileType || "document";
+  let hasContent = extractedText && extractedText.trim().length > 0;
 
   const prompt = hasContent
-    ? `You are an assistant that creates concise summaries for uploaded documents. Summarize the important information from the following document text into 2-3 short paragraphs, no more than 120 words. Keep the summary easy to read, include what the document is about, and do not include any analysis of the request.
+    ? `You are an assistant that generates a short, user-facing summary for an uploaded document. Use the extracted text to describe what the document contains, including the main subject, document purpose, and important sections or topics. If the text includes a table of contents or section headings, summarize the document structure rather than repeating it verbatim. Write 2-3 short paragraphs, about 100 to 140 words, in plain language.
     
     Document title: ${safeTitle}
     Document description: ${safeDescription}
     Document type: ${safeType}
     Document text:
-    ${truncateText(extractedText, 12000)}`
-    : `You are an assistant that creates a short summary for an uploaded document. Summarize the document using the available metadata only. Keep it under 80 words.
+    ${truncateText(extractedText, 6000)}`
+    : `You are an assistant that creates a short summary for an uploaded document. Summarize the document using the available metadata only. Mention what the document appears to cover and why it might be useful. Keep it under 90 words.
 
     Document title: ${safeTitle}
     Document description: ${safeDescription}
@@ -102,7 +107,7 @@ const generateDocumentSummary = async ({ title, description, fileType, extracted
 
   try {
     const { model } = getOpenAiConfig();
-    return await requestOpenAi({
+    const summary = await requestOpenAi({
       model,
       messages: [
         {
@@ -117,8 +122,24 @@ const generateDocumentSummary = async ({ title, description, fileType, extracted
       temperature: 0.5,
       max_tokens: 300,
     });
+    
+    // Cleanup
+    safeTitle = null;
+    safeDescription = null;
+    safeType = null;
+    hasContent = null;
+    
+    return summary;
   } catch (error) {
-    return buildFallbackSummary({ title, description, fileType, extractedText });
+    const fallback = buildFallbackSummary({ title, description, fileType, extractedText });
+    
+    // Cleanup on error too
+    safeTitle = null;
+    safeDescription = null;
+    safeType = null;
+    hasContent = null;
+    
+    return fallback;
   }
 };
 

@@ -145,6 +145,21 @@ const downloadDocument = async (req, res) => {
   }
 };
 
+const fetchMyDocuments = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const documents = await getDocumentsByUserId(userId);
+
+    res.status(200).json(documents || []);
+  } catch (error) {
+    console.error("FETCH MY DOCUMENTS ERROR:", error);
+
+    res.status(500).json({
+      message: error.message || "Server Error",
+    });
+  }
+};
+
 const searchDocument = async (req, res) => {
   try {
     const { q } = req.query;
@@ -188,6 +203,7 @@ const deleteDocument = async (req, res) => {
 
 module.exports = {
   fetchDocuments,
+  fetchMyDocuments,
   getDocument,
   uploadDocument,
   downloadDocument,
