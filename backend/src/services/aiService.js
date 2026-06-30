@@ -12,7 +12,7 @@ const fetch = typeof globalThis.fetch === "function"
 const getOpenAiConfig = () => {
   const apiKey = process.env.OPENAI_API_KEY;
   const apiBaseUrl = process.env.OPENAI_API_BASE_URL || "https://api.openai.com/v1";
-  const model = process.env.OPENAI_MODEL || "gpt-3.5-turbo";
+  const model = process.env.OPENAI_MODEL;
 
   return { apiKey, apiBaseUrl, model };
 };
@@ -59,6 +59,10 @@ const requestOpenAi = async (payload) => {
 
   if (!apiKey) {
     throw new Error("OpenAI API key is not configured. Set OPENAI_API_KEY in your environment.");
+  }
+
+  if (!model) {
+    throw new Error("OpenAI model is not configured. Set OPENAI_MODEL in your environment.");
   }
 
   if (!fetch) {
@@ -153,7 +157,64 @@ const processChatMessage = async (message, conversationId) => {
   return `Echo: ${normalizedMessage}`;
 };
 
+const processDocumentQuestion = async ({ question, document }) => {
+  const normalizedQuestion = question?.trim() || "";
+
+  if (!normalizedQuestion) {
+    return "Please ask a question about this document.";
+  }
+
+  const documentText = [
+    document?.title ? `Title: ${document.title}` : "",
+    document?.description ? `Description: ${document.description}` : "",
+    document?.ai_summary ? `Summary: ${document.ai_summary}` : "",
+    document?.extracted_text ? `Extracted text: ${truncateText(document.extracted_text, 7000)}` : "",
+  ].filter(Boolean).join("\n\n");
+
+  if (!documentText) {
+    return "I do not have enough document content to answer that yet.";
+  }
+
+  try {
+    const { model } = getOpenAiConfig();
+    const reply = await requestOpenAi({
+      model,
+      messages: [
+        {
+          role: "system",
+          content: "Answer questions using only the provided document context. If the answer is not in the context, say that the document does not provide enough information.",
+        },
+        {
+          role: "user",
+          content: `Document context:\n${documentText}\n\nQuestion: ${normalizedQuestion}`,
+        },
+      ],
+      temperature: 0.2,
+      max_tokens: 350,
+    });
+
+    return reply;
+  } catch (error) {
+    const lowerQuestion = normalizedQuestion.toLowerCase();
+    const lowerText = documentText.toLowerCase();
+    const questionWords = lowerQuestion.match(/[a-z0-9]{4,}/g) || [];
+    const matched = questionWords.filter((word) => lowerText.includes(word)).slice(0, 5);
+
+    if (matched.length > 0) {
+      return `I found related context for ${matched.join(", ")}. ${buildFallbackSummary({
+        title: document?.title,
+        description: document?.description,
+        fileType: document?.file_type,
+        extractedText: document?.extracted_text || document?.ai_summary,
+      })}`;
+    }
+
+    return "I could not confidently answer from the available document text. Try asking about the document title, summary, or visible content.";
+  }
+};
+
 module.exports = {
   processChatMessage,
   generateDocumentSummary,
+  processDocumentQuestion,
 };

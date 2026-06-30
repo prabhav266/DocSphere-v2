@@ -2,7 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
-const upload = require("../middleware/uploadMiddleware");
+const {
+  profileImageUpload,
+} = require("../middleware/uploadMiddleware");
 
 const { protect } = require("../middleware/authMiddleware");
 
@@ -19,7 +21,7 @@ router.patch("/:id", protect, updateUser);
 router.post(
   "/profile-image",
   protect,
-  upload.single("image"),
+  profileImageUpload.single("image"),
   uploadProfileImage
 );
 

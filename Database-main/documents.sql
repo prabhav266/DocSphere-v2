@@ -28,6 +28,12 @@ CREATE TABLE documents (
 
     preview_image TEXT,
 
+    extracted_text TEXT,
+    ai_summary TEXT,
+
+    share_token TEXT UNIQUE,
+    share_expires_at TIMESTAMP,
+
     total_views INTEGER DEFAULT 0,
 
     total_downloads INTEGER DEFAULT 0,

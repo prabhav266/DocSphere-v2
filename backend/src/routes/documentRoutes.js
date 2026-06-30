@@ -11,6 +11,9 @@ const {
   uploadDocument,
   downloadDocument,
   searchDocument,
+  shareDocument,
+  fetchSharedDocument,
+  fetchAnalytics,
   deleteDocument,
 } = require(
   "../controllers/documentController"
@@ -26,7 +29,11 @@ router.get("/", fetchDocuments);
 
 router.get("/my", protect, fetchMyDocuments);
 
+router.get("/analytics", protect, fetchAnalytics);
+
 router.get("/search", searchDocument);
+
+router.get("/shared/:token", fetchSharedDocument);
 
 router.post(
   "/upload",
@@ -38,6 +45,12 @@ router.delete(
   "/:id",
   protect,
   deleteDocument
+);
+
+router.post(
+  "/:id/share",
+  protect,
+  shareDocument
 );
 
 router.get("/:id/download", downloadDocument);

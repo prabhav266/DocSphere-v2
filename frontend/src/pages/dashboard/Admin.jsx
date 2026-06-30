@@ -1,18 +1,41 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useDocuments } from '../../context/DocumentContext';
-import { Shield, FileText, Upload, Search, Sparkles } from 'lucide-react';
+import { Shield, FileText, Upload, Sparkles } from 'lucide-react';
 import Button from '../../components/Button';
+import { documentService } from '../../api/documentService';
 
 const Admin = () => {
   const { user } = useAuth();
   const { documents } = useDocuments();
+  const [analytics, setAnalytics] = useState(null);
+
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      try {
+        const data = await documentService.getAnalytics();
+        setAnalytics(data);
+      } catch (error) {
+        console.error('Failed to load analytics:', error);
+      }
+    };
+
+    loadAnalytics();
+  }, []);
 
   const totalDocuments = documents.length;
   const pdfDocuments = documents.filter((doc) => doc.file_type === 'application/pdf').length;
   const publicDocuments = documents.filter((doc) => doc.visibility === 'public').length;
   const privateDocuments = totalDocuments - publicDocuments;
+  const stats = useMemo(() => ({
+    total: analytics?.total_documents ?? totalDocuments,
+    public: analytics?.public_documents ?? publicDocuments,
+    private: analytics?.private_documents ?? privateDocuments,
+    downloads: analytics?.total_downloads ?? documents.reduce((sum, doc) => sum + (doc.total_downloads || 0), 0),
+    views: analytics?.total_views ?? documents.reduce((sum, doc) => sum + (doc.total_views || 0), 0),
+    storage: Number(analytics?.total_storage_bytes ?? documents.reduce((sum, doc) => sum + (doc.file_size || 0), 0)),
+  }), [analytics, documents, privateDocuments, publicDocuments, totalDocuments]);
 
   return (
     <div className="space-y-6">
@@ -33,7 +56,7 @@ const Admin = () => {
         <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
             <p className="text-sm text-slate-500 dark:text-slate-400">Total Documents</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{totalDocuments}</p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{stats.total}</p>
           </div>
           <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
             <p className="text-sm text-slate-500 dark:text-slate-400">PDF Documents</p>
@@ -41,11 +64,26 @@ const Admin = () => {
           </div>
           <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
             <p className="text-sm text-slate-500 dark:text-slate-400">Public Documents</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{publicDocuments}</p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{stats.public}</p>
           </div>
           <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
             <p className="text-sm text-slate-500 dark:text-slate-400">Private Documents</p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{privateDocuments}</p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900 dark:text-white">{stats.private}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Total Views</p>
+            <p className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">{stats.views}</p>
+          </div>
+          <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Downloads</p>
+            <p className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">{stats.downloads}</p>
+          </div>
+          <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5">
+            <p className="text-sm text-slate-500 dark:text-slate-400">Storage Used</p>
+            <p className="mt-3 text-2xl font-semibold text-slate-900 dark:text-white">{(stats.storage / (1024 * 1024)).toFixed(2)} MB</p>
           </div>
         </div>
 
@@ -77,14 +115,14 @@ const Admin = () => {
               This page can later be extended with document moderation, AI summary regeneration, and activity logs.
             </p>
             <div className="mt-5 space-y-3">
-              <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Admin portal</p>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">A separate landing page for administrator actions and metrics.</p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
-                <p className="text-sm font-medium text-slate-900 dark:text-white">Document oversight</p>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Quickly navigate to library and upload workflows.</p>
-              </div>
+              {(analytics?.top_documents || documents.slice(0, 2)).slice(0, 3).map((doc) => (
+                <div key={doc.id} className="rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4">
+                  <p className="text-sm font-medium text-slate-900 dark:text-white">{doc.title}</p>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    {(doc.total_views || 0)} views • {(doc.total_downloads || 0)} downloads
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

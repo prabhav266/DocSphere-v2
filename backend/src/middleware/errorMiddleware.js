@@ -16,7 +16,11 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ message: err.message });
   }
 
-  if (err.message && err.message.startsWith("Unsupported file type")) {
+  if (
+    err.message &&
+    (err.message.startsWith("Unsupported file type") ||
+      err.message.startsWith("Unsupported image type"))
+  ) {
     return res.status(400).json({ message: err.message });
   }
 

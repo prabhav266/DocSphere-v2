@@ -32,14 +32,25 @@ const ALLOWED_MIME_TYPES = [
   "image/gif",
 ];
 
+const ALLOWED_PROFILE_IMAGE_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+];
+
 const fileFilter = (req, file, cb) => {
-  if (
-    ALLOWED_MIME_TYPES.includes(file.mimetype) ||
-    file.fieldname === "image" // profile image route is more permissive
-  ) {
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
     return cb(null, true);
   }
   cb(new Error("Unsupported file type: " + file.mimetype));
+};
+
+const profileImageFileFilter = (req, file, cb) => {
+  if (ALLOWED_PROFILE_IMAGE_MIME_TYPES.includes(file.mimetype)) {
+    return cb(null, true);
+  }
+  cb(new Error("Unsupported image type: " + file.mimetype));
 };
 
 const upload = multer({
@@ -48,4 +59,11 @@ const upload = multer({
   fileFilter,
 });
 
+const profileImageUpload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: profileImageFileFilter,
+});
+
 module.exports = upload;
+module.exports.profileImageUpload = profileImageUpload;

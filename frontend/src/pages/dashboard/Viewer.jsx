@@ -5,21 +5,26 @@ import {
   FileText,
   ArrowLeft,
   Trash2,
-  Loader2
+  Loader2,
+  Send,
+  MessageSquare
 } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import { useDocuments } from '../../context/DocumentContext';
 import { getDocExt, getDocDate, getDocSize } from '../../utils/format';
 import { documentService } from '../../api/documentService';
-
-const API_ORIGIN = import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '');
+import { API_ORIGIN } from '../../api/apiClient';
 
 const Viewer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getDocumentById, deleteDocument, documents } = useDocuments();
   const [deleting, setDeleting] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [asking, setAsking] = useState(false);
+  const [shareStatus, setShareStatus] = useState('');
 
   const doc = useMemo(() => getDocumentById(id), [id, getDocumentById]);
   const loading = !doc && documents.length === 0;
@@ -49,6 +54,34 @@ const Viewer = () => {
     window.open(documentService.getDownloadUrl(doc.id), '_blank');
   };
 
+  const handleShare = async () => {
+    if (!doc) return;
+    setShareStatus('Creating link...');
+    try {
+      const share = await documentService.createShareLink(doc.id, 7);
+      await navigator.clipboard?.writeText(share.url);
+      setShareStatus('Share link copied. It expires in 7 days.');
+    } catch (err) {
+      setShareStatus(err.message || 'Failed to create share link.');
+    }
+  };
+
+  const handleAsk = async (e) => {
+    e.preventDefault();
+    if (!question.trim()) return;
+
+    setAsking(true);
+    setAnswer('');
+    try {
+      const response = await documentService.askQuestion(doc.id, question);
+      setAnswer(response.answer);
+    } catch (err) {
+      setAnswer(err.message || 'Could not answer this question.');
+    } finally {
+      setAsking(false);
+    }
+  };
+
   if (loading || !doc) {
     return (
       <div className="h-[calc(100vh-120px)] flex items-center justify-center">
@@ -76,10 +109,7 @@ const Viewer = () => {
           <Button variant="ghost" size="sm" className="text-red-500 hover:bg-red-50" onClick={handleDelete} disabled={deleting}>
             <Trash2 className="h-4 w-4" />
           </Button>
-          <Button variant="secondary" size="sm" className="gap-2" onClick={() => {
-            navigator.clipboard?.writeText(window.location.href);
-            alert('Link copied to clipboard');
-          }}>
+          <Button variant="secondary" size="sm" className="gap-2" onClick={handleShare}>
             <Share2 className="h-4 w-4" /> Share
           </Button>
           <Button size="sm" className="gap-2" onClick={handleDownload}>
@@ -104,6 +134,33 @@ const Viewer = () => {
           <p className="text-sm text-slate-500 dark:text-slate-400">No summary available yet. Upload the document to generate a summary automatically.</p>
         </div>
       )}
+
+      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="flex items-center justify-between gap-4 mb-3">
+          <h2 className="text-lg font-semibold flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary-600" />
+            Ask This Document
+          </h2>
+          {shareStatus && <span className="text-xs text-slate-500">{shareStatus}</span>}
+        </div>
+        <form onSubmit={handleAsk} className="flex flex-col sm:flex-row gap-2">
+          <input
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask about the purpose, sections, numbers, or key points..."
+            className="flex-1 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
+          />
+          <Button type="submit" disabled={asking || !question.trim()} className="gap-2">
+            {asking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            Ask
+          </Button>
+        </form>
+        {answer && (
+          <p className="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line">
+            {answer}
+          </p>
+        )}
+      </div>
 
       <div className="flex-1 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex flex-col relative border border-slate-300 dark:border-slate-700 shadow-sm">
         {type === 'PDF' && fileUrl ? (

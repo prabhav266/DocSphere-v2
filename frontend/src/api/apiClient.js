@@ -1,4 +1,5 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+export const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, '');
 
 function getAuthHeaders(isFormData = false) {
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -29,7 +30,7 @@ async function request(endpoint, options = {}) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       throw new Error(errorData.message || 'API request failed');

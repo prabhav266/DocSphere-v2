@@ -1,6 +1,5 @@
 import { apiClient } from './apiClient';
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from './apiClient';
 
 export const documentService = {
   getAll: async () => {
@@ -13,6 +12,10 @@ export const documentService = {
 
   getMine: async () => {
     return await apiClient.get('/documents/my');
+  },
+
+  getAnalytics: async () => {
+    return await apiClient.get('/documents/analytics');
   },
 
   // Upload a real file with title, description, visibility
@@ -29,11 +32,29 @@ export const documentService = {
     return await apiClient.delete(`/documents/${id}`);
   },
 
-  search: async (query) => {
-    return await apiClient.get(`/documents/search?q=${encodeURIComponent(query)}`);
+  search: async ({ query = '', type = 'All', visibility = 'all', dateRange = 'all', mine = false } = {}) => {
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (type && type !== 'All') params.set('type', type);
+    if (visibility && visibility !== 'all') params.set('visibility', visibility);
+    if (dateRange && dateRange !== 'all') params.set('dateRange', dateRange);
+    if (mine) params.set('mine', 'true');
+    return await apiClient.get(`/documents/search?${params.toString()}`);
+  },
+
+  createShareLink: async (id, expiresInDays = 7) => {
+    return await apiClient.post(`/documents/${id}/share`, { expiresInDays });
+  },
+
+  getShared: async (token) => {
+    return await apiClient.get(`/documents/shared/${token}`);
+  },
+
+  askQuestion: async (id, question) => {
+    return await apiClient.post(`/chat/documents/${id}`, { question });
   },
 
   getDownloadUrl: (id) => {
-    return `${BASE_URL}/documents/${id}/download`;
+    return `${API_BASE_URL}/documents/${id}/download`;
   },
 };

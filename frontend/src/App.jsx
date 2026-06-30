@@ -7,6 +7,7 @@ import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
+import SharedDocument from './pages/SharedDocument';
 
 // Dashboard Pages
 import DashboardHome from './pages/dashboard/DashboardHome';
@@ -32,46 +33,43 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
-      <DocumentProvider>
-        <ThemeProvider>
-          <Router>
-            <Routes>
-              {/* Public */}
-              <Route path="/" element={<AdminGate />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
+      <ThemeProvider>
+        <Router>
+          <Routes>
+            {/* Public */}
+            <Route path="/" element={<AdminGate />} />
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/shared/:token" element={<SharedDocument />} />
 
-              {/* Private Dashboard */}
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
+            {/* Private Dashboard */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DocumentProvider>
                     <DashboardLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardHome />} />
-                <Route path="library" element={<Library />} />
-                <Route path="pdf-library" element={<PdfLibrary />} />
-                <Route path="upload" element={<Upload />} />
-                <Route path="search" element={<Search />} />
-                <Route index element={<Admin />} />
-                <Route path="home" element={<DashboardHome />} />
-                <Route path="library" element={<Library />} />
-                <Route path="pdf-library" element={<PdfLibrary />} />
-                <Route path="upload" element={<Upload />} />
-                <Route path="search" element={<Search />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="viewer/:id" element={<Viewer />} />
-              </Route>
+                  </DocumentProvider>
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<DashboardHome />} />
+              <Route path="home" element={<DashboardHome />} />
+              <Route path="library" element={<Library />} />
+              <Route path="pdf-library" element={<PdfLibrary />} />
+              <Route path="upload" element={<Upload />} />
+              <Route path="search" element={<Search />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="admin" element={<Admin />} />
+              <Route path="viewer/:id" element={<Viewer />} />
+            </Route>
 
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </Router>
-        </ThemeProvider>
-      </DocumentProvider>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

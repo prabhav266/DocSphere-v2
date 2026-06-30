@@ -7,6 +7,7 @@ const documentRoutes = require("./routes/documentRoutes");
 const requestRoutes = require("./routes/requestRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/requests", requestRoutes);
+app.use("/api/chat", chatRoutes);
 app.use(
   "/uploads",
   express.static(path.join(__dirname, "../uploads"))

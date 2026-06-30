@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/Card';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { Shield, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Shield, AlertCircle } from 'lucide-react';
 
 import { useAuth } from '../../context/AuthContext';
 

@@ -85,6 +85,9 @@ CREATE TABLE IF NOT EXISTS documents (
     extracted_text TEXT,
     ai_summary TEXT,
 
+    share_token TEXT UNIQUE,
+    share_expires_at TIMESTAMP,
+
     total_views INTEGER DEFAULT 0,
 
     total_downloads INTEGER DEFAULT 0,
@@ -155,6 +158,8 @@ CREATE TABLE IF NOT EXISTS document_embeddings (
 CREATE INDEX IF NOT EXISTS idx_documents_uploaded_by ON documents(uploaded_by);
 CREATE INDEX IF NOT EXISTS idx_documents_title ON documents USING gin (to_tsvector('english', title));
 CREATE INDEX IF NOT EXISTS idx_documents_created_at ON documents(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_documents_share_token ON documents(share_token);
+CREATE INDEX IF NOT EXISTS idx_documents_visibility ON documents(visibility);
 
 -- Seed a couple of default categories so the dropdown isn't empty
 INSERT INTO categories (category_name, description) VALUES

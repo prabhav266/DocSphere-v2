@@ -5,15 +5,13 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "backend": "json-server --watch db.json --port 3001",
-        "start": "npm run backend & npm run dev",
+        "start": "npm run dev",
         "build": "vite build",
         "lint": "eslint .",
         "preview": "vite preview"
     },
     "dependencies": {
         "clsx": "^2.1.1",
-        "json-server": "^1.0.0-beta.15",
         "lucide-react": "^1.17.0",
         "react": "^19.2.6",
         "react-dom": "^19.2.6",
