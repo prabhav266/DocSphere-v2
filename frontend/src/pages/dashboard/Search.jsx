@@ -50,13 +50,13 @@ const Search = () => {
     <div className="space-y-8">
       <div className="max-w-3xl mx-auto text-center space-y-4">
         <h1 className="text-3xl font-bold">Search Documents</h1>
-        <p className="text-slate-500 dark:text-slate-400">Find content by title, description, generated tags, or extracted PDF text.</p>
+        <p className="text-app-muted">Find content by title, description, generated tags, or extracted PDF text.</p>
         <div className="relative mt-8">
-          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-app-muted" />
           <input
             type="text"
             placeholder="Search inside your documents..."
-            className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:border-primary-500 focus:ring-0 transition-all outline-none text-lg"
+            className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-app-border bg-app-surface focus:border-primary-500 focus:ring-0 transition-all outline-none text-lg"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -107,16 +107,16 @@ const Search = () => {
                 ))}
               </div>
               {!loading && results.length === 0 && (
-                <div className="py-16 text-center rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                <div className="py-16 text-center rounded-2xl border border-dashed border-app-border">
                   <p className="font-semibold">No matching documents</p>
-                  <p className="mt-2 text-sm text-slate-500">Try a broader query or fewer filters.</p>
+                  <p className="mt-2 text-sm text-app-muted">Try a broader query or fewer filters.</p>
                 </div>
               )}
             </>
           ) : (
             <div className="space-y-6">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Clock className="h-5 w-5 text-slate-400" /> Recent Documents
+                <Clock className="h-5 w-5 text-app-muted" /> Recent Documents
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                 {documents.slice(0, 3).map(doc => (
@@ -133,11 +133,11 @@ const Search = () => {
 
 const FilterSelect = ({ label, value, onChange, options }) => (
   <label className="block space-y-2">
-    <span className="text-sm font-semibold uppercase tracking-wider text-slate-400">{label}</span>
+    <span className="text-sm font-semibold uppercase tracking-wider text-app-muted">{label}</span>
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
+      className="w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
     >
       {options.map(([optionValue, optionLabel]) => (
         <option key={optionValue} value={optionValue}>{optionLabel}</option>

@@ -24,14 +24,27 @@ const createUser = async (
   passwordHash
 ) => {
   const result = await pool.query(
-    `
-    INSERT INTO users
-    (username,email,password_hash,role)
-    VALUES ($1,$2,$3,$4)
-    RETURNING *
-    `,
-    [username, email, passwordHash, "user"]
-  );
+`
+INSERT INTO users
+(
+username,
+email,
+password_hash,
+role,
+status
+)
+VALUES
+($1,$2,$3,$4,$5)
+RETURNING *
+`,
+[
+username,
+email,
+passwordHash,
+"user",
+"pending"
+]
+);
 
   return result.rows[0];
 };

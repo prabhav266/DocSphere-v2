@@ -8,6 +8,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import SharedDocument from './pages/SharedDocument';
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Dashboard Pages
 import DashboardHome from './pages/dashboard/DashboardHome';
@@ -62,11 +63,12 @@ function App() {
               <Route path="upload" element={<Upload />} />
               <Route path="search" element={<Search />} />
               <Route path="settings" element={<Settings />} />
-              <Route path="admin" element={<Admin />} />
+              <Route path="admin" element={<AdminDashboard />} />
               <Route path="viewer/:id" element={<Viewer />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </Router>
       </ThemeProvider>

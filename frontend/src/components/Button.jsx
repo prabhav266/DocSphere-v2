@@ -4,8 +4,8 @@ import { cn } from '../utils/cn';
 const Button = React.forwardRef(({ className, variant = 'primary', size = 'md', as: Component = 'button', ...props }, ref) => {
   const variants = {
     primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-sm',
-    secondary: 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700 dark:hover:bg-slate-700',
-    ghost: 'bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400',
+    secondary: 'bg-app-surface text-app-text border border-app-border hover:bg-app-surface-muted',
+    ghost: 'bg-transparent hover:bg-app-surface-muted text-app-text',
     danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
   };
 

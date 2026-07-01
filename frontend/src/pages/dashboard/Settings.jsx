@@ -45,8 +45,8 @@ const Settings = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-slate-500 dark:text-slate-400">Manage your account preferences and application settings.</p>
+        <h1 className="text-2xl font-bold text-app-text">Settings</h1>
+        <p className="text-app-muted">Manage your account preferences and application settings.</p>
       </div>
 
       <div className="grid md:grid-cols-4 gap-8">
@@ -69,12 +69,12 @@ const Settings = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-6">
-                <div className="w-20 h-20 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center text-primary-700 dark:text-primary-300 font-bold text-2xl border-4 border-white dark:border-slate-800 shadow-sm">
+                <div className="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-2xl border-4 border-app-border shadow-sm">
                   {initials}
                 </div>
                 <div>
                   <Button variant="secondary" size="sm" disabled>Change Avatar</Button>
-                  <p className="text-xs text-slate-500 mt-2">JPG, GIF or PNG. Max size 2MB.</p>
+                  <p className="text-xs text-app-muted mt-2">JPG, GIF or PNG. Max size 2MB.</p>
                 </div>
               </div>
 
@@ -97,7 +97,7 @@ const Settings = () => {
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
               />
             </CardContent>
-            <CardFooter className="justify-end bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl border-t border-slate-100 dark:border-slate-800 gap-4">
+            <CardFooter className="justify-end bg-app-surface-muted rounded-b-xl border-t border-app-border gap-4">
               {saveError && (
                 <span className="text-sm text-red-600 mr-auto">{saveError}</span>
               )}
@@ -121,13 +121,13 @@ const Settings = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">Dark Mode</p>
-                  <p className="text-sm text-slate-500">Toggle between light and dark theme.</p>
+                  <p className="text-sm text-app-muted">Toggle between light and dark theme.</p>
                 </div>
                 <button
                   onClick={toggleTheme}
-                  className={`w-12 h-6 rounded-full transition-colors relative ${theme === 'dark' ? 'bg-primary-600' : 'bg-slate-300'}`}
+                  className={`w-12 h-6 rounded-full transition-colors relative ${theme === 'dark' ? 'bg-primary-600' : 'bg-app-surface-muted'}`}
                 >
-                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${theme === 'dark' ? 'translate-x-7' : 'translate-x-1'}`} />
+                  <div className={`absolute top-1 w-4 h-4 bg-app-surface rounded-full transition-transform ${theme === 'dark' ? 'translate-x-7' : 'translate-x-1'}`} />
                 </button>
               </div>
             </CardContent>
@@ -139,7 +139,7 @@ const Settings = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-app-muted">
                   Log out securely from the current session and return to the admin gate.
                 </p>
                 <Button variant="danger" className="w-full" onClick={handleLogout}>
@@ -157,8 +157,8 @@ const Settings = () => {
 const SettingsLink = ({ icon, label, active }) => (
   <button className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
     active
-      ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400'
-      : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800'
+      ? 'bg-app-surface-muted text-app-text'
+      : 'text-app-muted hover:bg-app-surface-muted'
   }`}>
     {icon}
     {label}

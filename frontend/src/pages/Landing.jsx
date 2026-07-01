@@ -11,19 +11,19 @@ const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col w-full">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md z-50 border-b border-slate-200 dark:border-slate-800">
+      <nav className="fixed top-0 w-full bg-app-surface/80 backdrop-blur-md z-50 border-b border-app-border text-app-text">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-2">
               <Shield className="h-8 w-8 text-primary-600" />
-              <span className="text-xl font-bold text-slate-900 dark:text-white">DocSphere</span>
+              <span className="text-xl font-bold text-app-text">DocSphere</span>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-slate-600 hover:text-primary-600 dark:text-slate-400 dark:hover:text-primary-400 transition-colors">Features</a>
-              <a href="#about" className="text-slate-600 hover:text-primary-600 dark:text-slate-400 dark:hover:text-primary-400 transition-colors">About</a>
-              <a href="#contact" className="text-slate-600 hover:text-primary-600 dark:text-slate-400 dark:hover:text-primary-400 transition-colors">Contact</a>
-              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+              <a href="#features" className="text-app-muted hover:text-primary-600 transition-colors">Features</a>
+              <a href="#about" className="text-app-muted hover:text-primary-600 transition-colors">About</a>
+              <a href="#contact" className="text-app-muted hover:text-primary-600 transition-colors">Contact</a>
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-app-surface-muted">
                 {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </button>
               <Link to="/login">
@@ -49,10 +49,10 @@ const Landing = () => {
       {/* Hero Section */}
       <header className="pt-32 pb-16 md:pt-48 md:pb-32 px-4 bg-gradient-to-b from-primary-50/50 to-white dark:from-primary-950/20 dark:to-slate-950">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-app-text mb-6 tracking-tight">
             Manage Documents with <span className="text-primary-600">Precision.</span>
           </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-app-muted mb-10 max-w-2xl mx-auto">
             The ultimate repository for your PDFs, notes, reports, and presentations. Organize, search, and access everything in one secure place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -67,11 +67,11 @@ const Landing = () => {
       </header>
 
       {/* Features */}
-      <section id="features" className="py-24 bg-white dark:bg-slate-950">
+      <section id="features" className="py-24 bg-app-surface">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Everything you need</h2>
-            <p className="text-slate-600 dark:text-slate-400">Streamlined features for modern document management.</p>
+            <p className="text-app-muted">Streamlined features for modern document management.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
@@ -94,13 +94,13 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="mt-auto py-12 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+      <footer className="mt-auto py-12 border-t border-app-border bg-app-surface-muted">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Shield className="h-6 w-6 text-primary-600" />
             <span className="text-lg font-bold">DocSphere</span>
           </div>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
+          <p className="text-app-muted text-sm">
             © 2026 DocSphere. Built for productivity.
           </p>
         </div>
@@ -110,10 +110,10 @@ const Landing = () => {
 };
 
 const FeatureCard = ({ icon, title, description }) => (
-  <div className="p-8 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-primary-500/50 transition-all bg-white dark:bg-slate-900 shadow-sm">
+  <div className="p-8 rounded-2xl border border-app-border hover:border-primary-500/50 transition-all bg-app-surface shadow-sm">
     <div className="mb-4">{icon}</div>
-    <h3 className="text-xl font-bold mb-2">{title}</h3>
-    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{description}</p>
+    <h3 className="text-xl font-bold mb-2 text-app-text">{title}</h3>
+    <p className="text-app-muted leading-relaxed">{description}</p>
   </div>
 );
 

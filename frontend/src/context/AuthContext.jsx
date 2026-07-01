@@ -22,11 +22,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (data) => {
-    const savedUser = await authService.register(data);
-    setUser(savedUser);
-    setIsAuthenticated(true);
-    localStorage.setItem('user', JSON.stringify(savedUser));
-    return true;
+    const response = await authService.register(data);
+    return response;
   };
 
   const logout = () => {
@@ -37,7 +34,6 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (data) => {
     const updatedUser = await authService.updateProfile(user.id, data);
-    // Merge so we keep the token (PATCH response doesn't include it)
     const merged = { ...user, ...updatedUser };
     setUser(merged);
     localStorage.setItem('user', JSON.stringify(merged));

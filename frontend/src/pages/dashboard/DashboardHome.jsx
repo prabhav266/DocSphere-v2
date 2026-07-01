@@ -52,20 +52,20 @@ const DashboardHome = () => {
     {
       label: "Total Files",
       value: totalFiles.toString(),
-      icon: <Files className="h-6 w-6" />,
-      color: "text-blue-600 bg-blue-50 dark:bg-blue-900/20",
+      icon: <Files className="h-6 w-6 text-app-muted" />,
+      color: "bg-app-surface-muted text-app-text",
     },
     {
       label: "Categories",
       value: uniqueCategories.toString(),
-      icon: <FolderOpen className="h-6 w-6" />,
-      color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20",
+      icon: <FolderOpen className="h-6 w-6 text-app-muted" />,
+      color: "bg-app-surface-muted text-app-text",
     },
     {
       label: "Recent Uploads",
       value: recentUploads.toString(),
-      icon: <Clock className="h-6 w-6" />,
-      color: "text-orange-600 bg-orange-50 dark:bg-orange-900/20",
+      icon: <Clock className="h-6 w-6 text-app-muted" />,
+      color: "bg-app-surface-muted text-app-text",
     },
   ];
 
@@ -73,11 +73,11 @@ const DashboardHome = () => {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-app-text">
             Welcome back, {displayName}!
           </h1>
 
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-app-muted">
             Here&apos;s an overview of your workspace today.
           </p>
         </div>
@@ -108,11 +108,11 @@ const DashboardHome = () => {
               </div>
 
               <div>
-                <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                <p className="text-sm text-app-muted font-medium">
                   {stat.label}
                 </p>
 
-                <p className="text-xl font-bold text-slate-900 dark:text-white">
+                <p className="text-xl font-bold text-app-text">
                   {stat.value}
                 </p>
               </div>
@@ -135,7 +135,7 @@ const DashboardHome = () => {
         </div>
 
         {loading ? (
-          <p className="text-slate-500">Loading your documents...</p>
+          <p className="text-app-muted">Loading your documents...</p>
         ) : documents.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {documents.slice(0, 4).map((doc) => (
@@ -143,9 +143,9 @@ const DashboardHome = () => {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-8 text-center">
-            <p className="font-semibold text-slate-700 dark:text-slate-200">No documents uploaded yet.</p>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          <div className="rounded-2xl border border-dashed border-app-border p-8 text-center">
+            <p className="font-semibold text-app-text">No documents uploaded yet.</p>
+            <p className="mt-2 text-sm text-app-muted">
               Start by uploading your first document to see it appear here.
             </p>
           </div>
@@ -161,35 +161,35 @@ const DashboardHome = () => {
 
           <div className="space-y-6">
             <div>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Total Storage Used</p>
+              <p className="text-sm text-app-muted">Total Storage Used</p>
               <p className="text-3xl font-bold mt-2">{totalStorageMB} MB</p>
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm text-slate-500">
+              <div className="flex items-center justify-between text-sm text-app-muted">
                 <span>Current usage</span>
                 <span>{storageProgress}%</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+              <div className="h-2 rounded-full bg-app-surface-muted overflow-hidden">
                 <div className="h-full rounded-full bg-primary-600" style={{ width: `${storageProgress}%` }} />
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-              <p className="text-sm text-slate-500">Files Stored</p>
+            <div className="pt-4 border-t border-app-border">
+              <p className="text-sm text-app-muted">Files Stored</p>
               <p className="text-xl font-semibold">{totalFiles}</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-6 flex flex-col justify-center items-center text-center space-y-4">
-          <div className="w-16 h-16 bg-primary-50 dark:bg-primary-900/20 rounded-full flex items-center justify-center">
-            <FolderOpen className="h-8 w-8 text-primary-600" />
+<div className="w-16 h-16 bg-app-surface-muted rounded-full flex items-center justify-center">
+              <FolderOpen className="h-8 w-8 text-app-muted" />
           </div>
 
           <div>
             <h3 className="font-bold text-lg">Categories</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-app-muted">
               You currently have {uniqueCategories} categories.
             </p>
           </div>

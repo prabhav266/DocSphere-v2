@@ -8,6 +8,7 @@ const requestRoutes = require("./routes/requestRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
@@ -22,7 +23,7 @@ app.use(
   })
 );
 app.use(express.json());
-
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/requests", requestRoutes);

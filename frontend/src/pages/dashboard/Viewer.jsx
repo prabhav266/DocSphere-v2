@@ -102,7 +102,7 @@ const Viewer = () => {
           </Button>
           <div className="min-w-0">
             <h1 className="text-xl font-bold truncate max-w-50 md:max-w-md">{doc.title}</h1>
-            <p className="text-xs text-slate-500">{type} • {getDocSize(doc)} • Uploaded on {getDocDate(doc)}</p>
+            <p className="text-xs text-app-muted">{type} • {getDocSize(doc)} • Uploaded on {getDocDate(doc)}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -119,50 +119,50 @@ const Viewer = () => {
       </div>
 
       {doc.ai_summary ? (
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-app-surface border border-app-border shadow-sm">
           <div className="flex items-center justify-between gap-4 mb-3">
             <h2 className="text-lg font-semibold">AI Summary</h2>
-            <span className="text-xs uppercase tracking-[0.18em] text-slate-400">Auto-generated</span>
+            <span className="text-xs uppercase tracking-[0.18em] text-app-muted">Auto-generated</span>
           </div>
-          <p className="text-sm leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line">
+          <p className="text-sm leading-6 text-app-text whitespace-pre-line">
             {doc.ai_summary}
           </p>
         </div>
       ) : (
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="p-4 rounded-2xl bg-app-surface border border-app-border shadow-sm">
           <h2 className="text-lg font-semibold mb-2">AI Summary</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">No summary available yet. Upload the document to generate a summary automatically.</p>
+          <p className="text-sm text-app-muted">No summary available yet. Upload the document to generate a summary automatically.</p>
         </div>
       )}
 
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="flex items-center justify-between gap-4 mb-3">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-primary-600" />
-            Ask This Document
-          </h2>
-          {shareStatus && <span className="text-xs text-slate-500">{shareStatus}</span>}
-        </div>
-        <form onSubmit={handleAsk} className="flex flex-col sm:flex-row gap-2">
-          <input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask about the purpose, sections, numbers, or key points..."
-            className="flex-1 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
-          />
-          <Button type="submit" disabled={asking || !question.trim()} className="gap-2">
-            {asking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            Ask
-          </Button>
-        </form>
-        {answer && (
-          <p className="mt-4 text-sm leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line">
+<div className="p-4 rounded-2xl bg-app-surface border border-app-border shadow-sm">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary-600" />
+              Ask This Document
+            </h2>
+            {shareStatus && <span className="text-xs text-app-muted">{shareStatus}</span>}
+          </div>
+          <form onSubmit={handleAsk} className="flex flex-col sm:flex-row gap-2">
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask about the purpose, sections, numbers, or key points..."
+              className="flex-1 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <Button type="submit" disabled={asking || !question.trim()} className="gap-2">
+              {asking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Ask
+            </Button>
+          </form>
+          {answer && (
+            <p className="mt-4 text-sm leading-6 text-app-text whitespace-pre-line">
             {answer}
           </p>
         )}
       </div>
 
-      <div className="flex-1 bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden flex flex-col relative border border-slate-300 dark:border-slate-700 shadow-sm">
+      <div className="flex-1 bg-app-surface-muted rounded-xl overflow-hidden flex flex-col relative border border-app-border shadow-sm">
         {type === 'PDF' && fileUrl ? (
           <iframe
             src={`${fileUrl}#toolbar=0&navpanes=0`}
@@ -172,9 +172,9 @@ const Viewer = () => {
           />
         ) : (
           <div className="flex flex-col items-center justify-center h-full space-y-4 p-12 text-center">
-            <FileText className="h-20 w-20 text-slate-300" />
+            <FileText className="h-20 w-20 text-app-muted" />
             <h2 className="text-xl font-bold">Preview not available for {type} files</h2>
-            <p className="text-slate-500 max-w-md">The online viewer currently only supports direct PDF previews. You can download the file to view it on your device.</p>
+            <p className="text-app-muted max-w-md">The online viewer currently only supports direct PDF previews. You can download the file to view it on your device.</p>
             <Button variant="secondary" onClick={handleDownload}>Download {type}</Button>
           </div>
         )}

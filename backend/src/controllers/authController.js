@@ -40,7 +40,11 @@ const registerUser = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await createUser(trimmedUsername, trimmedEmail, passwordHash);
 
-    res.status(201).json(buildUserResponse(user));
+    res.status(201).json({
+  success: true,
+  message:
+    "Registration successful. Your account is awaiting administrator approval.",
+});
   } catch (error) {
     console.error("REGISTER ERROR:", error);
 
@@ -68,6 +72,12 @@ const loginUser = async (req, res) => {
         message: "Invalid Credentials",
       });
     }
+    if (user.status !== "approved") {
+  return res.status(403).json({
+    message:
+      "Your account is awaiting administrator approval.",
+  });
+}
 
     const isMatch = await bcrypt.compare(password, user.password_hash || "");
 

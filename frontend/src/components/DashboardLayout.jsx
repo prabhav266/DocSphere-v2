@@ -7,7 +7,7 @@ const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 w-full">
+    <div className="flex min-h-screen bg-app-bg w-full">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className="flex-1 flex flex-col min-w-0">
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />

@@ -44,7 +44,7 @@ const PdfLibrary = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold">My Uploads</h1>
-            <p className="text-slate-500 dark:text-slate-400">All your uploaded PDF documents are collected here separately from other file types.</p>
+            <p className="text-app-muted">All your uploaded PDF documents are collected here separately from other file types.</p>
           </div>
         </div>
 
@@ -60,21 +60,21 @@ const PdfLibrary = () => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center py-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center py-2 border-b border-app-border">
         <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-app-muted" />
           <input
             type="text"
-            placeholder="Search PDFs..."
-            className="w-full pl-9 pr-4 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 focus:ring-1 focus:ring-primary-500 outline-none"
+            placeholder="Search PDF library..."
+            className="w-full pl-9 pr-4 py-1.5 text-sm rounded-lg border border-app-border bg-app-surface focus:ring-1 focus:ring-primary-500 outline-none text-app-text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">Sort:</span>
+          <span className="text-sm text-app-muted">Sort:</span>
           <select
-            className="bg-transparent text-sm font-semibold focus:ring-0 border-none p-0 pr-6 dark:text-white cursor-pointer outline-none"
+            className="bg-transparent text-sm font-semibold focus:ring-0 border-none p-0 pr-6 text-app-text cursor-pointer outline-none"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -93,16 +93,16 @@ const PdfLibrary = () => {
         </div>
       ) : (
         <div className="py-20 text-center">
-          <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+          <div className="w-16 h-16 bg-app-surface-muted rounded-full flex items-center justify-center mx-auto mb-4 text-app-muted">
             <Filter className="h-8 w-8" />
           </div>
-          <h3 className="text-lg font-bold">No PDFs uploaded yet</h3>
-          <p className="text-slate-500">Upload PDF files from the Upload page to see them here.</p>
+          <h3 className="text-lg font-bold text-app-text">No PDFs uploaded yet</h3>
+          <p className="text-app-muted">Upload PDF files from the Upload page to see them here.</p>
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-8 border-t border-slate-100 dark:border-slate-800">
-        <p className="text-sm text-slate-500">Showing {filteredDocuments.length} PDF documents</p>
+      <div className="flex items-center justify-between pt-8 border-t border-app-border">
+        <p className="text-sm text-app-muted">Showing {filteredDocuments.length} PDF documents</p>
         <div className="flex gap-2">
           <Button variant="secondary" size="sm" disabled>
             Previous

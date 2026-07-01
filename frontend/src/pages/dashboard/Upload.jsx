@@ -16,6 +16,7 @@ const Upload = () => {
   const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('public');
   const [formError, setFormError] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -49,6 +50,7 @@ const Upload = () => {
       return;
     }
     setFormError('');
+    setFeedback('');
 
     setIsUploading(true);
     setProgress(0);
@@ -83,6 +85,7 @@ const Upload = () => {
 
       setProgress(100);
       clearInterval(progressInterval);
+      setFeedback('Your document has been submitted successfully and is now pending admin approval.');
 
       setTimeout(() => {
         navigate('/dashboard/pdf-library');
@@ -103,15 +106,15 @@ const Upload = () => {
     <div className="max-w-4xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Upload Documents</h1>
-        <p className="text-slate-500 dark:text-slate-400">Add new resources to your DocSphere library.</p>
+        <p className="text-app-muted">Add new resources to your DocSphere library.</p>
       </div>
 
-      <Card className="p-12 border-dashed border-2 border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 flex flex-col items-center justify-center text-center">
+      <Card className="p-12 border-dashed border-2 border-app-border bg-app-surface-muted/75 flex flex-col items-center justify-center text-center">
         <div className="w-16 h-16 bg-primary-50 dark:bg-primary-900/20 rounded-full flex items-center justify-center mb-4">
           <CloudUpload className="h-8 w-8 text-primary-600" />
         </div>
         <h3 className="text-lg font-bold mb-2">Drag and drop your files here</h3>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Support for PDF, DOCX, PPTX and TXT up to 50MB.</p>
+        <p className="text-sm text-app-muted mb-6">Support for PDF, DOCX, PPTX and TXT up to 50MB.</p>
         <label className="cursor-pointer">
           <input type="file" multiple className="hidden" onChange={handleFileChange} accept=".pdf,.docx,.pptx,.txt" />
           <Button variant="secondary" as="span">Browse Files</Button>
@@ -132,9 +135,9 @@ const Upload = () => {
                 required
               />
               <div className="w-full space-y-1.5">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
+                <label className="text-sm font-medium text-app-text">Description</label>
                 <textarea
-                  className="flex w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:placeholder:text-slate-400"
+                  className="flex w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 disabled:cursor-not-allowed disabled:opacity-50"
                   rows={3}
                   placeholder="Brief description of this document..."
                   value={description}
@@ -144,9 +147,9 @@ const Upload = () => {
                 />
               </div>
               <div className="w-full space-y-1.5">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Visibility</label>
+                <label className="text-sm font-medium text-app-text">Visibility</label>
                 <select
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-slate-800 dark:bg-slate-950"
+                  className="flex h-10 w-full rounded-md border border-app-border bg-app-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   value={visibility}
                   onChange={(e) => setVisibility(e.target.value)}
                   disabled={isUploading}
@@ -159,9 +162,16 @@ const Upload = () => {
           </div>
 
           {formError && (
-            <div className="p-3 rounded-md bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+            <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm flex items-center gap-2">
               <AlertCircle className="h-4 w-4 flex-shrink-0" />
               {formError}
+            </div>
+          )}
+
+          {feedback && (
+            <div className="p-3 rounded-md bg-emerald-50 text-emerald-700 text-sm flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 flex-shrink-0" />
+              {feedback}
             </div>
           )}
 
@@ -175,11 +185,11 @@ const Upload = () => {
 
             <div className="space-y-3">
               {files.map((fileObj, index) => (
-                <div key={index} className="flex items-center gap-4 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800">
-                  <FileText className="h-5 w-5 text-slate-400" />
+                <div key={index} className="flex items-center gap-4 p-3 bg-app-surface-muted rounded-lg border border-app-border">
+                  <FileText className="h-5 w-5 text-app-muted" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{fileObj.file.name}</p>
-                    <p className="text-xs text-slate-500">{(fileObj.file.size / 1024).toFixed(1)} KB</p>
+                    <p className="text-xs text-app-muted">{(fileObj.file.size / 1024).toFixed(1)} KB</p>
                   </div>
                   {fileObj.status === 'completed' ? (
                     <div className="flex items-center gap-2 text-green-600 text-xs font-bold">
@@ -192,11 +202,11 @@ const Upload = () => {
                       <span>Failed</span>
                     </div>
                   ) : isUploading ? (
-                    <div className="w-20 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="w-20 h-1.5 bg-app-surface-muted rounded-full overflow-hidden">
                       <div className="h-full bg-primary-600 transition-all duration-300" style={{ width: `${progress}%` }}></div>
                     </div>
                   ) : (
-                    <button onClick={() => removeFile(index)} className="p-1 hover:bg-red-50 hover:text-red-600 rounded-md transition-colors text-slate-400">
+                    <button onClick={() => removeFile(index)} className="p-1 hover:bg-app-surface-muted rounded-md transition-colors text-app-muted">
                       <X className="h-4 w-4" />
                     </button>
                   )}
@@ -210,7 +220,7 @@ const Upload = () => {
                   <span>Processing files...</span>
                   <span>{progress}%</span>
                 </div>
-                <div className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-app-surface-muted rounded-full overflow-hidden">
                   <div className="h-full bg-primary-600 transition-all duration-300" style={{ width: `${progress}%` }}></div>
                 </div>
               </div>

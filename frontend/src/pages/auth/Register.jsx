@@ -66,7 +66,7 @@ const Register = () => {
 
     try {
       await register(formData);
-      navigate('/dashboard');
+      navigate('/login?registered=1');
     } catch (err) {
       console.error('Registration error:', err);
       setError(err.message || 'Registration failed. Please check your connection to the server.');
@@ -75,14 +75,14 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-950 w-full">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-app-bg text-app-text w-full">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 text-2xl font-bold">
             <Shield className="h-8 w-8 text-primary-600" />
             <span>DocSphere</span>
           </Link>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">Create your account to start managing documents.</p>
+          <p className="text-app-muted mt-2">Create your account to start managing documents.</p>
         </div>
 
         <Card>
@@ -92,8 +92,8 @@ const Register = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="p-3 rounded-md bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <div className="p-3 rounded-md bg-app-surface-muted text-red-600 text-sm flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
                   {error}
                 </div>
               )}
@@ -125,18 +125,17 @@ const Register = () => {
                 required
               />
 
-              {/* Password Strength Indicator */}
               <div className="flex gap-1 mt-1">
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
                     className={`h-1 flex-1 rounded-full transition-colors ${
-                      strength >= i ? 'bg-primary-500' : 'bg-slate-200 dark:bg-slate-800'
+                      strength >= i ? 'bg-primary-500' : 'bg-app-surface-muted'
                     }`}
                   />
                 ))}
               </div>
-              <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Password Strength</p>
+              <p className="text-[10px] text-app-muted uppercase font-bold tracking-wider">Password Strength</p>
 
               <Input
                 label="Confirm Password"
@@ -145,24 +144,24 @@ const Register = () => {
                 placeholder="••••••••"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                error={formData.confirmPassword && formData.password !== formData.confirmPassword ? "Passwords do not match" : ""}
+                error={formData.confirmPassword && formData.password !== formData.confirmPassword ? 'Passwords do not match' : ''}
                 required
               />
 
               <div className="flex items-start gap-2 pt-2">
-                <input type="checkbox" id="terms" className="mt-1 rounded border-slate-300 text-primary-600 focus:ring-primary-500" required />
-                <label htmlFor="terms" className="text-xs text-slate-600 dark:text-slate-400 leading-normal">
+                <input type="checkbox" id="terms" className="mt-1 rounded border-app-border text-primary-600 focus:ring-primary-500" required />
+                <label htmlFor="terms" className="text-xs text-app-muted leading-normal">
                   I agree to the <Link to="/" className="text-primary-600 hover:underline">Terms of Service</Link> and <Link to="/" className="text-primary-600 hover:underline">Privacy Policy</Link>.
                 </label>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Creating Account..." : "Register"}
+                {isLoading ? 'Creating Account...' : 'Register'}
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="justify-center border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-xl">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+          <CardFooter className="justify-center border-t border-app-border bg-app-surface/50 rounded-b-xl">
+            <p className="text-sm text-app-muted">
               Already have an account?{' '}
               <Link to="/login" className="text-primary-600 font-semibold hover:underline">
                 Sign In

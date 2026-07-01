@@ -42,10 +42,11 @@ const generateTagsFromText = (...parts) => {
 
 const getAllDocuments = async () => {
   const result = await pool.query(
-    `${documentSelect}
-     GROUP BY d.id, c.category_name, f.folder_name
-     ORDER BY d.created_at DESC`
-  );
+  `${documentSelect}
+   WHERE d.status = 'approved'
+   GROUP BY d.id, c.category_name, f.folder_name
+   ORDER BY d.created_at DESC`
+);
 
   return result.rows;
 };
@@ -54,6 +55,7 @@ const getDocumentById = async (id) => {
   const result = await pool.query(
     `${documentSelect}
      WHERE d.id = $1
+     AND d.status = 'approved'
      GROUP BY d.id, c.category_name, f.folder_name`,
     [id]
   );
@@ -65,7 +67,8 @@ const getDocumentByShareToken = async (token) => {
   const result = await pool.query(
     `${documentSelect}
      WHERE d.share_token = $1
-       AND (d.share_expires_at IS NULL OR d.share_expires_at > NOW())
+AND d.status = 'approved'
+AND (d.share_expires_at IS NULL OR d.share_expires_at > NOW())
      GROUP BY d.id, c.category_name, f.folder_name`,
     [token]
   );
@@ -78,7 +81,14 @@ const getDocumentsByUserId = async (userId) => {
     `${documentSelect}
      WHERE d.uploaded_by = $1
      GROUP BY d.id, c.category_name, f.folder_name
-     ORDER BY d.created_at DESC`,
+     ORDER BY
+       CASE
+         WHEN d.status = 'pending' THEN 1
+         WHEN d.status = 'approved' THEN 2
+         WHEN d.status = 'rejected' THEN 3
+         ELSE 4
+       END,
+       d.created_at DESC`,
     [userId]
   );
 
@@ -98,30 +108,32 @@ const createDocument = async (
   const result = await pool.query(
     `
     INSERT INTO documents
-    (
-      uploaded_by,
-      title,
-      description,
-      file_name,
-      file_url,
-      file_type,
-      file_size,
-      visibility
-    )
-    VALUES
-    ($1,$2,$3,$4,$5,$6,$7,$8)
+(
+uploaded_by,
+title,
+description,
+file_name,
+file_url,
+file_type,
+file_size,
+visibility,
+status
+)
+   VALUES
+($1,$2,$3,$4,$5,$6,$7,$8,$9)
     RETURNING *
     `,
     [
-      uploaded_by,
-      title,
-      description,
-      file_name,
-      file_url,
-      file_type,
-      file_size,
-      visibility,
-    ]
+  uploaded_by,
+  title,
+  description,
+  file_name,
+  file_url,
+  file_type,
+  file_size,
+  visibility,
+  "pending",
+]
   );
 
   return result.rows[0];
@@ -157,6 +169,7 @@ const searchDocuments = async ({
   uploadedBy,
 } = {}) => {
   const clauses = [];
+  clauses.push("d.status = 'approved'");
   const values = [];
 
   const addValue = (value) => {
