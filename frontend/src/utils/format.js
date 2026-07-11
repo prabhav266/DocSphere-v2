@@ -17,14 +17,19 @@ export const getDocExt = (doc) => {
 
 export const getDocDate = (doc) => {
   if (!doc.created_at) return '';
-  return new Date(doc.created_at).toISOString().split('T')[0];
+  const date = new Date(doc.created_at);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toISOString().split('T')[0];
 };
 
 export const getDocSize = (doc) => {
-  if (!doc.file_size) return '0 KB';
-  const mb = doc.file_size / (1024 * 1024);
+  const bytes = Number(doc.file_size) || 0;
+  if (bytes <= 0) return '0 B';
+  if (bytes < 1024) return `${bytes} B`;
+
+  const mb = bytes / (1024 * 1024);
   if (mb >= 1) return `${mb.toFixed(1)} MB`;
-  return `${(doc.file_size / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024).toFixed(1)} KB`;
 };
 
-export const getDocSizeMB = (doc) => (doc.file_size || 0) / (1024 * 1024);
+export const getDocSizeMB = (doc) => (Number(doc.file_size) || 0) / (1024 * 1024);
