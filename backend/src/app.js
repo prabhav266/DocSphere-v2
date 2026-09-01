@@ -11,6 +11,8 @@ const chatRoutes = require("./routes/chatRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+const { authLimiter, apiLimiter } = require("./middleware/rateLimiter");
+const pool = require("./config/db");
 
 const app = express();
 
@@ -23,8 +25,14 @@ app.use(
   })
 );
 app.use(express.json());
+
+// Global API rate limiting
+app.use("/api", apiLimiter);
+
+// Specific auth endpoint rate limiting
+app.use("/api/auth", authLimiter, authRoutes);
+
 app.use("/api/admin", adminRoutes);
-app.use("/api/auth", authRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/requests", requestRoutes);
 app.use("/api/chat", chatRoutes);
@@ -36,11 +44,26 @@ app.use(
 app.use("/api/categories", categoryRoutes);
 app.use("/api/users", userRoutes);
 
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+// Enhanced System Health Check Endpoint
+app.get("/api/health", async (req, res) => {
+  let dbStatus = "disconnected";
+  try {
+    const dbRes = await pool.query("SELECT NOW()");
+    if (dbRes?.rows?.length > 0) dbStatus = "connected";
+  } catch (err) {
+    dbStatus = `error: ${err.message}`;
+  }
+
+  res.json({
+    status: "ok",
+    environment: process.env.NODE_ENV || "development",
+    uptimeSeconds: Math.floor(process.uptime()),
+    database: dbStatus,
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Must be registered after all routes
+// Error Handling Middleware
 app.use(notFound);
 app.use(errorHandler);
 
