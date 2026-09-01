@@ -5,7 +5,7 @@ const Card = ({ className, children, ...props }) => {
   return (
     <div
       className={cn(
-        "rounded-xl border border-app-border bg-app-surface text-app-text shadow-sm",
+        "rounded-3xl border border-app-border bg-app-surface text-app-text shadow-2xs transition-all duration-300",
         className
       )}
       {...props}
@@ -22,7 +22,7 @@ const CardHeader = ({ className, children, ...props }) => (
 );
 
 const CardTitle = ({ className, children, ...props }) => (
-  <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)} {...props}>
+  <h3 className={cn("text-xl font-extrabold leading-none tracking-tight", className)} {...props}>
     {children}
   </h3>
 );

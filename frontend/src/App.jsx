@@ -18,7 +18,6 @@ import Upload from './pages/dashboard/Upload';
 import Search from './pages/dashboard/Search';
 import Settings from './pages/dashboard/Settings';
 import Viewer from './pages/dashboard/Viewer';
-import Admin from './pages/dashboard/Admin';
 
 // Layout & Context
 import DashboardLayout from './components/DashboardLayout';
@@ -28,7 +27,7 @@ import { DocumentProvider } from './context/DocumentContext';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
@@ -67,8 +66,7 @@ function App() {
               <Route path="viewer/:id" element={<Viewer />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </ThemeProvider>
